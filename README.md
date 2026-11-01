@@ -36,9 +36,11 @@ cd fplinux
 ```
 
 The branch is on current FPLinux `main`, in upstream's newer target layout: the panel is described
-in `display/panel.toml` and the board pin map is compiled into the bootstrap. It builds, and its
-device tree is identical to the one my phone booted on the older tree apart from the display
-compatible. I haven't booted this build on the phone yet. The older branch `ruio-f286-7c32451`
+in `display/panel.toml`, the board pin map is compiled into the bootstrap, and the 48 MB boot
+layout is set in the phone's own `target.toml`, so the other UMS9117 phones keep theirs. It
+builds and passes upstream's full `./fplinux check`, and its device tree is identical to the one
+my phone booted on the older tree apart from the display compatible and the radio node, which
+moved to the root. I haven't booted this build on the phone yet. The older branch `ruio-f286-7c32451`
 keeps the exact tree the phone was tested with.
 
 Preparing the device data from a NAND backup doesn't complete yet: neither of the phone's two CM4
