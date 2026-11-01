@@ -62,11 +62,8 @@ LTE DSP hangs the whole AP about 1.1 s later with no panic and no sign that the 
 
 - The radio driver is a research driver, full of switches and log lines, and `load_lte` will
   hang the phone.
-- The 48 MB bootstrap layout commit on the branch changes the layout for every UMS9117 target.
-  Upstream needs a per-target layout first.
 - On my RAM-boot setup `/lib/firmware` comes up empty, so I copy the DSP firmware in by hand
   after each boot (`rig/push_firmware.sh`).
-- The NAND OOB size (64) in the storage commit is an assumption.
 - Only tested on one F286.
 
 ## Licence
