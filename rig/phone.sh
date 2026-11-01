@@ -18,5 +18,7 @@ phone() {
 	"$SSH_BIN" $SSH_OPTS -o ConnectTimeout=10 "$PHONE" "$@"
 }
 
-RADIO=/sys/bus/platform/devices/soc:radio@0
+# The radio node is at the DT root on the current branch. Builds from the
+# older ruio-f286-7c32451 branch put it under soc: set RADIO=/sys/bus/platform/devices/soc:radio@0.
+RADIO=${RADIO:-/sys/bus/platform/devices/radio}
 PARAMS=/sys/module/f286_radio/parameters

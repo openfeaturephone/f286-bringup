@@ -17,7 +17,7 @@ export SSH_OPTS="-i /path/to/the/session/id_ed25519 -o StrictHostKeyChecking=no"
 ```
 
 The radio driver creates its attributes about 60 s after boot (the probe only
-schedules deferred work), so wait for `/sys/bus/platform/devices/soc:radio@0/radio_power`
+schedules deferred work), so wait for `/sys/bus/platform/devices/radio/radio_power`
 to appear. `rig/stock_early_test.sh` does that wait for you.
 
 ## DSP firmware: copy it in on every boot
@@ -70,7 +70,7 @@ bash rig/boot_sequence.sh           # radio_power, load_lte, status, dmesg snaps
 Or by hand on the phone:
 
 ```
-R=/sys/bus/platform/devices/soc:radio@0
+R=/sys/bus/platform/devices/radio
 P=/sys/module/f286_radio/parameters
 echo 1 > $P/stock_early
 echo 1 > $P/xdsp_cores

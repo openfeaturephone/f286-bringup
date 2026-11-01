@@ -3,11 +3,12 @@
 `platforms/ums9117/linux/drivers/soc/ums9117/f286-radio.c` on the `ruio-f286` branch of
 [openfeaturephone/fplinux](https://github.com/openfeaturephone/fplinux/tree/ruio-f286), compatible
 `fplinux,ums9117-f286-radio`, built in with `CONFIG_F286_RADIO_UMS9117=y`. The DT
-node is reg-less (`radio@0` under `soc`); the driver hard-codes its register
+node (`radio` at the root of the tree) has no `reg`; the driver hard-codes its register
 windows like the rest of the F286 port. It touches no hardware until you write
 an attribute.
 
-Device directory: `/sys/bus/platform/devices/soc:radio@0`. Probe creates only
+Device directory: `/sys/bus/platform/devices/radio` (`soc:radio@0` on builds from the
+older `ruio-f286-7c32451` branch). Probe creates only
 `init`; the rest appear one at a time about 60 s after boot, each with a log line
 before it, so a hang names the attribute that caused it.
 
