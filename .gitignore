@@ -1,0 +1,22 @@
+# Build output
+__pycache__/
+*.pyc
+*.o
+*.elf
+*.exe
+*.ko
+tools/phone/memsample
+tools/phone/poke
+tools/phone/devmem
+model/*_selftest
+
+# Firmware, RAM-boot images and dumps you make from your own phone.
+# None of it belongs in this repository.
+*.bin
+fw/
+dumps/
+out/
+
+# Captures from the test rig (may contain radio data from your SIM)
+logs/
+*.log
