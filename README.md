@@ -35,8 +35,15 @@ cd fplinux
 ./fplinux run ruio-f286 --build-type debug
 ```
 
-The branch sits on FPLinux 7c32451, which is what my phone boots. Upstream has since reorganised
-how targets are laid out, so it still needs rebasing before it can be sent upstream.
+The branch is on current FPLinux `main`, in upstream's newer target layout: the panel is described
+in `display/panel.toml` and the board pin map is compiled into the bootstrap. It builds, and its
+device tree is identical to the one my phone booted on the older tree apart from the display
+compatible. I haven't booted this build on the phone yet. The older branch `ruio-f286-7c32451`
+keeps the exact tree the phone was tested with.
+
+Preparing the device data from a NAND backup doesn't complete yet: neither of the phone's two CM4
+(Bluetooth/FM) images passes FPLinux's CM4 image check, on the old tree or the new one. The
+Bluetooth NV records do come out right.
 
 On Windows I build in WSL. `tools/setup_fplinux_wsl.sh` sets up an Ubuntu WSL distribution with
 a build user and a clone of that branch.
