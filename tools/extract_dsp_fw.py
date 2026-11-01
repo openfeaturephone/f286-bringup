@@ -18,6 +18,13 @@ the partitions already carved out, one file per partition.
   python3 extract_dsp_fw.py --gsm p_10000006.bin --lte p_10000005.bin \\
       --kernel kernel.bin -o out/
 
+ECC caveat: this cuts the partitions out verbatim. If the backup is a raw NAND
+read taken without applying the per-page ECC, the DSP images carry the bit errors
+the controller would normally correct (I measured ~1056 one-way flips over the
+first 0x150000 bytes of fw_dsp against stock DRAM), and the DSP will not run. Use
+an ECC-corrected dump, or reconstruct the image from a stock DRAM capture. The
+XDSP images come from the kernel partition, which is not affected.
+
 The XDSP images are checked against sha256 prefixes from the one F286 I have;
 pass --no-check if your firmware build differs (and expect the word counts in
 the driver to be wrong too).

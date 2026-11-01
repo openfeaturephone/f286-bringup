@@ -71,8 +71,26 @@ release. Ours never does either.
   FPLinux's clock driver only reads them, so TWPLL should be running in both.
   I have not read the lock bit on hardware (0x403E0008 bit6, and 0x402B00A0 &
   0x1F1 should be 0x101).
-- Firmware content. The images are plaintext partitions and load
-  byte-identical to what stock loads (sample words and head checked after copy).
+- Firmware content. A spot-check (sample words and the head) matched after the
+  copy, so this was ruled out at first. A full comparison since has reopened it;
+  see "The DSP code image is corrupted" below.
+
+## The DSP code image is corrupted
+
+Comparing the whole loaded image against stock DRAM, not just a sample, changed
+this. `f286-lte-dsp.bin` differs from the image stock runs in 1056 single bits
+over the first 0x150000 bytes checked; every difference is a 1 in the file and a
+0 in DRAM, and the two stock boots I captured agree on all 1056 positions.
+`f286-gsm-dsp.bin` is the same kind of thing. That one-directional, boot-stable
+pattern is the signature of a raw NAND read with the ECC left unapplied:
+`extract_dsp_fw.py` carves the partition verbatim from the NAND backup, so the
+bit flips the NAND controller would have corrected on a real read are still in
+the file. So FPLinux is releasing a DSP whose code image has about a thousand
+flipped bits, which is a strong candidate for why it never executes (any flip in
+the reset vector or the early setup would do it). This is separate from the empty
+calibration tables below: that is NV data the driver skips, this is the DSP's own
+code. The next test is to rebuild the image from a stock DRAM capture (the bytes
+that actually ran, already ECC-corrected) and repeat `load_lte`.
 
 ## Differences from stock that remain at release time
 
@@ -105,10 +123,11 @@ phone:
    after a hang needs the DRAM-preserving reset path (`ramboot/`), and I have not
    done that yet.
 2. Does the DSP execute at all? Zero writes from 13 ms on, and no LTE_P1 power
-   request, say no. Candidates: an exec clock still gated (the whale die-local
-   clock block at 0xD15E1028/0xD15E2000, which hangs the bus when touched from
-   Linux; `dieclk=1` tries it in a separate kthread), the boot address coding,
-   or a missing CM4/GSM prerequisite.
+   request, say no. Candidates: the corrupted code image (see "The DSP code image
+   is corrupted" — the current leading suspect); an exec clock still gated (the
+   whale die-local clock block at 0xD15E1028/0xD15E2000, which hangs the bus when
+   touched from Linux; `dieclk=1` tries it in a separate kthread); the boot
+   address coding; or a missing CM4/GSM prerequisite.
 3. Does the calibration block matter for starting at all? The next test is to put
    this phone's own calibration block (from a stock DRAM image) into the firmware
    file at offset 0x230000 (= 0x80678000 - 0x80448000) and repeat `load_lte`.
